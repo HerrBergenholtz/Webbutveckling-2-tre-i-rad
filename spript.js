@@ -1,10 +1,13 @@
 let cellElem;
-let board;
 let restartBtn;
 let statusText;
-let turn = "X";
+let turn;
+const xClass = "X";
+const oClass = "O";
 let running;
-const options = ["", "", "", "", "", "", "", "", ""];
+let winningMsg;
+let winningMsgText;
+let options = ["", "", "", "", "", "", "", "", ""];
 /*
 [0, 1 ,2]
 [3, 4, 5]
@@ -24,59 +27,86 @@ const conditions = [
 window.onload = () => {
     cellElem = document.querySelectorAll(".cell");
     cellElem.forEach(cell => {
-        cell.addEventListener("click", clickHandle, {once: true});
+        cell.addEventListener("click", clickHandle);
     })
-    board = document.getElementById("board");
     restartBtn = document.getElementById("restartBtn");
+    restartBtn.addEventListener("click", restart);
+    winningMsg = document.getElementById("resultScreen");
+    winningMsgText = document.getElementById("winnerText");
     statusText = document.getElementById("status");
+    turn = xClass;
     statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
-    running = true
+    running = true;
 }
 
 function clickHandle () {
     const cellIndex = this.getAttribute("cellIndex");
+    
+    if (!running || options[cellIndex] != "") {
+        return;
+    }
     place(this, cellIndex);
+    winControl();
 }
 
 function place(cell, index) {
     options[index] = turn;
     cell.innerHTML = turn;
-    swapTurns();
-    winControl();
-}
-
-function swapTurns () {
-    turn = (turn == "X") ? "O" : "X";
-    statusText.innerHTML = "<p>Det är "+ turn +" tur</p>";
 }
 
 function winControl () {
     let win = false;
-
-    for (let i = 0; i < conditions.length; i++) {
-        const winCondition = conditions[i];
-        const cell1 = options[winCondition[0]];
-        const cell2 = options[winCondition[1]];
-        const cell3 = options[winCondition[2]];
-
-        if (cell1 == "" || cell2 == "" || cell3 == "") {
-            continue;
-        }
-        if (cell1 == cell2 && cell2 == cell3) {
-            win = true;
-            break;
-        }
-    }
+    let winner;
+    
+    win = checkWin();
+    
     if (win) {
+        winner = turn;
         statusText.innerHTML = "<p>Vinnaren är " + turn +"</p>";
-        running = false
+        running = false;
+        displayMessage(winner);
     } else if (!options.includes("")) {
+        displayMessage(winner);
         statusText.innerHTML = "<p>Lika!</p>";
     } else {
         swapTurns();
     }
 }
 
+function checkWin() {
+    for (let i = 0; i < conditions.length; i++) {
+        const winCondition = conditions[i];
+        const cell1 = options[winCondition[0]];
+        const cell2 = options[winCondition[1]];
+        const cell3 = options[winCondition[2]];
+        
+        if (cell1 == "" || cell2 == "" || cell3 == "") {
+            continue;
+        } else if (cell1 == cell2 && cell2 == cell3) {
+            return win = true;
+        }
+    }
+}
+
+function displayMessage(winner) {
+    if (winner == xClass || winner == oClass) {
+        winningMsgText.innerText = winner + " vinner!!";
+    } else {
+        winningMsgText.innerText = "Lika!";
+    }
+    winningMsg.classList.add("display");
+}
+
+function swapTurns () {
+    turn = (turn == xClass) ? oClass : xClass;
+    statusText.innerHTML = "<p>Det är "+ turn +" tur</p>";
+}
+
 function restart() {
-    console.log("restar");
+    options = ["", "", "", "", "", "", "", "", ""];
+    turn = xClass;
+    statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
+    cellElem.forEach(cell => cell.innerHTML = "");
+    winningMsg.classList.remove("display")
+    running = true;
 }
