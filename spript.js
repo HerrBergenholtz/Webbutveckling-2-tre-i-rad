@@ -133,9 +133,9 @@ function computerPlace() {
     let computerPlaced;
 
     do {
-        computerPlaced = Math.floor(Math.random() * 9);
+        computerPlaced = Math.floor(Math.random() * 10);
     } while (options[computerPlaced] != "") {
-        computerPlaced = Math.floor(Math.random() * 9);
+        computerPlaced = Math.floor(Math.random() * 10);
     }
     console.log(computerPlaced);
     options[computerPlaced] = "O";
