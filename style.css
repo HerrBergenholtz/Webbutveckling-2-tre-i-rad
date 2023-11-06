@@ -6,9 +6,6 @@
     margin: auto;
     width: 100%;
     justify-content: center;
-    align-content: center;
-    justify-items: center;
-    align-items: center;
 }
 
 .container {
@@ -17,12 +14,13 @@
 
 .cell {
     cursor: pointer;
-    font-size: 80px;
+    font-size: 90px;
     height: 100px;
     width: 100px;
     border-color: black;
     border-width: 2px;
     border-style: solid;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .cell:first-child,
@@ -31,15 +29,15 @@
     border-top: none;
 }
 
-.cell:nth-child(3n +1) {
-    border-left: none;
-}
-
 .cell:nth-child(3n) {
     border-right: none;
 }
 
-.cell:nth-child(7), 
+.cell:nth-child(3n +1) {
+    border-left: none;
+}
+
+.cell:nth-child(7),
 .cell:nth-child(8),
 .cell:last-child {
     border-bottom: none;
