@@ -72,31 +72,39 @@ function clickHandle() {
 function place(cell, index) {
     options[index] = turn; //Placerar ett x eller o i options arrayen på den position som korresponderar till den rutan som klickades.
     cell.innerHTML = turn; //Skriver ut x eller o i elementet så att användaren ser det i rutnätet.
+    console.log("player placed");
 }
 
 function winControl() {
     let win = false;
     let winner;
+    console.log("wincheck()");
 
     win = checkWin(); //Kollar först om någon har vunnit.
 
     if (win) { //Ifall någon har vunnit
+        console.log(win);
         winner = turn; //Deklarerar vinnaren till den symbol som vann.
         statusText.innerHTML = "<p>Vinnaren är " + turn + "</p>"; //Skriver ut vinnaren i status texten.
         running = false; //Spelet är över
         displayMessage(winner); //Visar ett meddelande över hela skärmen med den som vinner.
     } else if (!options.includes("")) { //Om det inte finns en vinnare men options inte innehåller några tomma utrymmen så kommer displayMessage() köras fast då kommer den skriva ut att det blev lika 
+        console.log("draw");
         displayMessage();
         statusText.innerHTML = "<p>Lika!</p>";
         running = false;
-    } else if (mode === "normal") { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
+    } else if (mode == "computer") {
+        console.log("computerPlace()")
+        computerPlace(); 
+    } else if (mode == "normal") { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
+        console.log("swapTurns()");
         swapTurns();
-    } else if (mode === "computer") {
-        computerPlace();
     }
+    
 }
 
 function checkWin() {
+    console.log("checkWin()")
     for (let i = 0; i < conditions.length; i++) { //En for-loop som kommer loopa igeonom alla vilkor och kolla om alla korresponderande platser i options är fyllda med samma symbol.
         const winCondition = conditions[i]; //WinCondition deklareras som conditions i positionen av i, alltså så kommer varje loop kolla genom en condition.
         const cell1 = options[winCondition[0]];
@@ -130,17 +138,36 @@ function swapTurns() {
 }
 
 function computerPlace() {
-    let computerPlaced;
+    let available = []
+    for (let i = 0; i <8; i++) {
+        if(options[i] == '') {
+            available.push(i);
+        }
+    }
+
+    console.log(available);
+    let computerMove = random(available);
+    options[computerMove] = oClass;
+    cellElem[computerMove].innerHTML = oClass;
+    console.log(computerMove);
+
+
+    /*let computerPlaced;
 
     do {
         computerPlaced = Math.floor(Math.random() * 10);
-    } while (options[computerPlaced] != "") {
+    } while (options[computerPlaced] !== "" ) {
         computerPlaced = Math.floor(Math.random() * 10);
     }
     console.log(computerPlaced);
     options[computerPlaced] = "O";
     cellElem[computerPlaced].innerHTML = "O";
-    console.log(options);
+    console.log(options);*/
+}
+
+function random(available) {
+    console.log("random");
+    return Math.floor(Math.random() * available.length);
 }
 
 function restart() { //Startar om spelet.
