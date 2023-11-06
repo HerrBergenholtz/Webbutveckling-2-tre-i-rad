@@ -7,6 +7,9 @@ const oClass = "O";
 let running;
 let winningMsg;
 let winningMsgText;
+let normalButton;
+let vsComputerButton;
+let mode;
 let options = ["", "", "", "", "", "", "", "", ""]; //En array som innehåller alla utrymmen där användaren kan placera x och o, när användaren placerar ut x eller o så kommer det att synas på spelplanen men teckent kommer även att sättas in i options arrayen, detta för att kontrollera vinst.
 /*
 [0, 1 ,2]
@@ -34,12 +37,29 @@ window.onload = () => {
     winningMsg = document.getElementById("resultScreen");
     winningMsgText = document.getElementById("winnerText");
     statusText = document.getElementById("status");
+    normalButton = document.getElementById("normalButton");
+    normalButton.addEventListener("click", normalMode);
+    vsComputerButton = document.getElementById("vsComputerButton")
+    vsComputerButton.addEventListener("click", vsComputer);
     turn = xClass; //Det är x som börjar.
+    running = true; //Spelet körs.
+    mode = "normal";
     statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
-    running = true; //Spelet körs
+    console.log(mode);
+}
+
+function normalMode() {
+    restart();
+    mode = "normal";
+}
+
+function vsComputer() {
+    restart();
+    mode = "computer";
 }
 
 function clickHandle() {
+    console.log(mode);
     const cellIndex = this.getAttribute("data-cellIndex"); //Deklarerar cellIndex som värdet på attributet data-cellIndex hos det element som klickades, alltså så kommer det bli ett nummer mellan 0-9.
 
     if (!running || options[cellIndex] != "") { //Kontrollerar att spelet körs så att man inte kan placera när det inte körs och kontrollerar så att options i den positionen som korresponderar till rutan som klickades är tom så att användaren inte placerar flera x eller o på samma ruta.
@@ -69,8 +89,10 @@ function winControl() {
         displayMessage();
         statusText.innerHTML = "<p>Lika!</p>";
         running = false;
-    } else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
+    } else if (mode === "normal") { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
         swapTurns();
+    } else if (mode === "computer") {
+        computerPlace();
     }
 }
 
@@ -105,6 +127,20 @@ function swapTurns() {
         turn = xClass;
     }
     statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
+}
+
+function computerPlace() {
+    let computerPlaced;
+
+    do {
+        computerPlaced = Math.floor(Math.random() * 9);
+    } while (options[computerPlaced] != "") {
+        computerPlaced = Math.floor(Math.random() * 9);
+    }
+    console.log(computerPlaced);
+    options[computerPlaced] = "O";
+    cellElem[computerPlaced].innerHTML = "O";
+    console.log(options);
 }
 
 function restart() { //Startar om spelet.
