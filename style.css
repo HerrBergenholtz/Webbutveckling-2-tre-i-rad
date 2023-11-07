@@ -70,7 +70,16 @@
     cursor: pointer;
 }
 
-.resultScreen button:hover {
+.resultScreen button:hover, div button:hover {
     background-color: rgb(53, 53, 121);
     color: white;
+}
+
+div button {
+    width: 10%;
+    height: 40px;
+    border-width: 2px;
+    color: black;
+    cursor: pointer;
+    margin: 10px;
 }
