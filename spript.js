@@ -67,6 +67,7 @@ function clickHandle() {
     }
     place(this, cellIndex); //place tar this, alltså det element som klickades och cellIndex, som parametrar.
     winControl(); //Kontrollerar vinst efter användaren har placerat.
+
 }
 
 function place(cell, index) {
@@ -93,27 +94,25 @@ function winControl() {
         displayMessage();
         statusText.innerHTML = "<p>Lika!</p>";
         running = false;
-    } else if (mode == "computer") {
+    } /*else if (mode == "computer") {
         console.log("computerPlace()")
-        computerPlace(); 
-    } else if (mode == "normal") { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
-        console.log("swapTurns()");
+        computerPlace();
+    }*/else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
         swapTurns();
     }
-    
 }
 
 function checkWin() {
-    console.log("checkWin()")
+    console.log("checkWin()");
     for (let i = 0; i < conditions.length; i++) { //En for-loop som kommer loopa igeonom alla vilkor och kolla om alla korresponderande platser i options är fyllda med samma symbol.
         const winCondition = conditions[i]; //WinCondition deklareras som conditions i positionen av i, alltså så kommer varje loop kolla genom en condition.
         const cell1 = options[winCondition[0]];
         const cell2 = options[winCondition[1]];
         const cell3 = options[winCondition[2]]; //Deklarerar de 3 talen i varje condition array till korresponderande position i options genom att välja options i positionen av den condition array som loopen är på. ("[0, 1, 2]" är de tre talen i varje condition array)
 
-        if (cell1 == "" || cell2 == "" || cell3 == "") { //Ifall någon av cellerna är tomma så kan ingen ha vunnit och då går programmet vidare.
+        if (cell1 === "" || cell2 === "" || cell3 === "") { //Ifall någon av cellerna är tomma så kan ingen ha vunnit och då går programmet vidare.
             continue;
-        } else if (cell1 == cell2 && cell2 == cell3) { //Om alla celler är lika, alltså de är samma tecken så skickas win = true tillbaka till winControl
+        } else if (cell1 === cell2 && cell2 === cell3) { //Om alla celler är lika, alltså de är samma tecken så skickas win = true tillbaka till winControl
             return win = true;
         }
     }
@@ -129,27 +128,51 @@ function displayMessage(winner) {
 }
 
 function swapTurns() {
-    if (turn == xClass) { //Om det var x tur så blir det o och om det inte var x tur, alltså o tur så blir det x.
-        turn = oClass;
-    } else {
-        turn = xClass;
+    if (mode == "normanl") {
+        if (turn == xClass) { //Om det var x tur så blir det o och om det inte var x tur, alltså o tur så blir det x.
+            turn = oClass;
+            console.log("swap");
+        } else {
+            turn = xClass;
+            console.log("swapped");
+        }
+    } else if (mode == "computer") {
+        if (turn == xClass) {
+            turn = oClass;
+            computerPlace();
+            console.log("swap");
+        } else if (turn == oClass) {
+            turn = xClass;
+        }
     }
     statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
 }
 
 function computerPlace() {
     let available = []
-    for (let i = 0; i <8; i++) {
-        if(options[i] == '') {
-            available.push(i);
+    let random;
+    for (let i = 0; i < 10; i++) {
+        random = randomnum();
+        if (cellElem[random].innerHTML == "X" || cellElem[random].innerHTML == "O") {
+            continue;
+        } else {
+            options[random] = oClass;
+            cellElem[random].innerHTML = oClass;
+            break;
         }
     }
 
-    console.log(available);
-    let computerMove = random(available);
+    console.log(random);
+    console.log(options);
+    winControl();
+    /*let computerMove = random(available);
+    if (options[computerMove] == "") {
+        console.log("workey")
+    } else if (options[computerMove] != "") {
+        console.log("why no workey")
+    }
     options[computerMove] = oClass;
-    cellElem[computerMove].innerHTML = oClass;
-    console.log(computerMove);
+    cellElem[computerMove].innerHTML = oClass;*/
 
 
     /*let computerPlaced;
@@ -165,9 +188,9 @@ function computerPlace() {
     console.log(options);*/
 }
 
-function random(available) {
+function randomnum() {
     console.log("random");
-    return Math.floor(Math.random() * available.length);
+    return Math.floor(Math.random() * 8);
 }
 
 function restart() { //Startar om spelet.
