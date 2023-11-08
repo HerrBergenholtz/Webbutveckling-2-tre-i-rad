@@ -67,7 +67,6 @@ function clickHandle() { //Hanterar klick av användaren.
     if (!running || options[cellIndex] != "") { //Kontrollerar att spelet körs så att man inte kan placera när det inte körs och kontrollerar så att options i den positionen som korresponderar till rutan som klickades är tom så att användaren inte placerar flera x eller o på samma ruta.
         return;
     }
-
     place(this, cellIndex); //place tar this, alltså det element som klickades och cellIndex, som parametrar.
     winControl(); //Kontrollerar vinst efter användaren har placerat.
 }
@@ -80,7 +79,6 @@ function place(cell, index) {
 function winControl() { //Kontrollerar vinst.
     let win = false;
     let winner;
-
     win = checkWin(); //Kollar först om någon har vunnit.
 
     if (win) { //Ifall någon har vunnit
@@ -139,7 +137,6 @@ function displayMessage(winner) { //Visar vinst meddelande.
     winningMsg.classList.add("display"); //Lägger till en klass till den div som håller overlayen med meddelandet och restart knappen som gör att en CSS deklaration gäller för den, den deklarationen kommer överskrida nuvarande display som är none och ersätta det med flex (flex anvnds för att lätt och simpelt centrera innehållet.)
 }
 
-
 function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
     let randomAvailable; 
@@ -151,23 +148,9 @@ function computerPlace() { //Här placerar datorn ut sitt O.
             continue;
         }
     }
-
     randomAvailable = available[randomNum(available)];
-    
     options[randomAvailable] = oClass;
     cellElem[randomAvailable].innerHTML = oClass;
-    
-    /*for (let i = 0; i < 9; i++) {
-        let random = randomnum();
-        if (options[random] == "") {
-            options[random] = oClass;
-            cellElem[random].innerHTML = oClass;
-            break;
-        } else {
-            continue;
-        }
-    }*/
-
     winControl();
 }
 
