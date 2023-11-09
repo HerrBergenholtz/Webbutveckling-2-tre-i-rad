@@ -88,7 +88,7 @@ function winControl() { //Kontrollerar vinst.
     let win = false;
     let winner;
 
-    win = checkWin(); //Kollar först om någon har vunnit.
+    win = checkWin(turn, options); //Kollar först om någon har vunnit.
 
     if (win) { //Ifall någon har vunnit
         winner = turn; //Deklarerar vinnaren till den symbol som vann.
@@ -104,7 +104,7 @@ function winControl() { //Kontrollerar vinst.
     }
 }
 
-function checkWin() {
+function checkWin(turn, options) {
     for (let i = 0; i < conditions.length; i++) { //En for-loop som kommer loopa igeonom alla vilkor och kolla om alla korresponderande platser i options är fyllda med samma symbol.
         const winCondition = conditions[i]; //WinCondition deklareras som conditions i positionen av i, alltså så kommer varje loop kolla genom en condition.
         const cell1 = options[winCondition[0]];
@@ -113,7 +113,7 @@ function checkWin() {
 
         if (cell1 === "" || cell2 === "" || cell3 === "") { //Ifall någon av cellerna är tomma så kan ingen ha vunnit och då går programmet vidare.
             continue;
-        } else if (cell1 === cell2 && cell2 === cell3) { //Om alla tre celler i en condition är samma symbol i options, alltså de är samma tecken så skickas win = true tillbaka till winControl.
+        } else if (cell1 == turn && cell2 == turn && cell3 == turn) { //Om alla tre celler i en condition är samma symbol i options, alltså de är samma tecken så skickas win = true tillbaka till winControl.
             return win = true;
         }
     }
@@ -157,21 +157,34 @@ function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
     let randomAvailable;
 
+    available = availableSpots(options);
+
+    if (mode == "computer") {
+        randomAvailable = available[randomNum(available)];
+        options[randomAvailable] = oClass;
+        cellElem[randomAvailable].innerHTML = oClass;
+    } else {
+        minimax(options, oClass).index;
+    }
+
+    winControl();
+}
+
+function availableSpots(options) {
+    let spots = [];
+
     for (let i = 0; i < 9; i++) {
         if (options[i] == "") {
-            available.push(i);
+            spots.push(i);
         } else {
             continue;
         }
     }
-    randomAvailable = available[randomNum(available)];
-    options[randomAvailable] = oClass;
-    cellElem[randomAvailable].innerHTML = oClass;
-    winControl();
+    return spots;
 }
 
-function impossibleComputerPlace() {
-    let newBoard;
+function minimax(options, turn) {
+    
 }
 
 function randomNum(num) {
