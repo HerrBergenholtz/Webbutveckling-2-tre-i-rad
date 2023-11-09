@@ -9,6 +9,7 @@ let winningMsg;
 let winningMsgText;
 let normalButton;
 let vsComputerButton;
+let vsComputerHardButton
 let mode;
 let options = ["", "", "", "", "", "", "", "", ""]; //En array som innehåller alla utrymmen där användaren kan placera x och o, när användaren placerar ut x eller o så kommer det att synas på spelplanen men teckent kommer även att sättas in i options arrayen, detta för att kontrollera vinst.
 /*
@@ -31,7 +32,7 @@ window.onload = () => {
     cellElem = document.querySelectorAll(".cell"); //Väljer alla element med klassen "cell"
     cellElem.forEach(cell => {
         cell.addEventListener("click", clickHandle); //Lägger till en onclick på varje cell element.
-    })
+    });
     restartBtn = document.getElementById("restartBtn");
     restartBtn.addEventListener("click", restart);
     winningMsg = document.getElementById("resultScreen");
@@ -41,6 +42,8 @@ window.onload = () => {
     normalButton.addEventListener("click", normalMode);
     vsComputerButton = document.getElementById("vsComputerButton")
     vsComputerButton.addEventListener("click", vsComputer);
+    vsComputerHardButton = document.getElementById("vsComputerHardButton");
+    vsComputerHardButton.addEventListener("click", vsGoodComputer);
     document.addEventListener("keydown", konami);
     turn = xClass; //Det är x som börjar.
     running = true; //Spelet körs.
@@ -60,6 +63,11 @@ function vsComputer() { //När man väljer vscomputer mode så startas spelet om
     statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
 }
 
+function vsGoodComputer() {
+    restart();
+    mode = "impossible"
+    statusText.innerHTML = "<p>Du kör mot den oslagbara datorn, lycka till!</p>";
+}
 
 function clickHandle() { //Hanterar klick av användaren.
     const cellIndex = this.getAttribute("data-cellIndex"); //Deklarerar cellIndex som värdet på attributet data-cellIndex hos det element som klickades, alltså så kommer det bli ett nummer mellan 0-9.
@@ -67,7 +75,6 @@ function clickHandle() { //Hanterar klick av användaren.
     if (!running || options[cellIndex] != "") { //Kontrollerar att spelet körs så att man inte kan placera när det inte körs och kontrollerar så att options i den positionen som korresponderar till rutan som klickades är tom så att användaren inte placerar flera x eller o på samma ruta.
         return;
     }
-
     place(this, cellIndex); //place tar this, alltså det element som klickades och cellIndex, som parametrar.
     winControl(); //Kontrollerar vinst efter användaren har placerat.
 }
@@ -92,7 +99,7 @@ function winControl() { //Kontrollerar vinst.
         displayMessage();
         statusText.innerHTML = "<p>Lika!</p>";
         running = false;
-    }else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
+    } else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
         swapTurns();
     }
 }
@@ -127,6 +134,13 @@ function swapTurns() {
         } else {
             turn = xClass;
         }
+    } else {
+        if (turn == xClass) {
+            turn = oClass;
+            impossibleComputerPlace();
+        } else {
+            turn = xClass;
+        }
     }
 }
 
@@ -139,10 +153,9 @@ function displayMessage(winner) { //Visar vinst meddelande.
     winningMsg.classList.add("display"); //Lägger till en klass till den div som håller overlayen med meddelandet och restart knappen som gör att en CSS deklaration gäller för den, den deklarationen kommer överskrida nuvarande display som är none och ersätta det med flex (flex anvnds för att lätt och simpelt centrera innehållet.)
 }
 
-
 function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
-    let randomAvailable; 
+    let randomAvailable;
 
     for (let i = 0; i < 9; i++) {
         if (options[i] == "") {
@@ -151,24 +164,14 @@ function computerPlace() { //Här placerar datorn ut sitt O.
             continue;
         }
     }
-
     randomAvailable = available[randomNum(available)];
-    
     options[randomAvailable] = oClass;
     cellElem[randomAvailable].innerHTML = oClass;
-    
-    /*for (let i = 0; i < 9; i++) {
-        let random = randomnum();
-        if (options[random] == "") {
-            options[random] = oClass;
-            cellElem[random].innerHTML = oClass;
-            break;
-        } else {
-            continue;
-        }
-    }*/
-
     winControl();
+}
+
+function impossibleComputerPlace() {
+    let newBoard;
 }
 
 function randomNum(num) {
@@ -181,7 +184,7 @@ function restart() { //Startar om spelet.
     if (mode == "normal") {
         statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
     } else {
-    statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
+        statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
     }
     cellElem.forEach(cell => cell.innerHTML = ""); //Tömmer alla cell element på tecken
     winningMsg.classList.remove("display"); //Tar bort display klassen från overlayen så att den återigen får en display av none.
@@ -193,20 +196,20 @@ let pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Arr
 let current = 0; //Current är hur långt användaren har kommit i ordningen, alltså vilken plats i pattern arrayen de är på beroende på vilka knappar de tryckt på vilket börjar på 0.
 
 konami = (event) => { //Den function som kontrollerar hur långt användaren har kommit
-	if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) { //If-satsen kontrollerar att de tangenter som trycks är i ordningen eller om de är på fel plats i ordningen, i så fall återställs räkningen.
-		current = 0;
-		return;
-	}
+    if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) { //If-satsen kontrollerar att de tangenter som trycks är i ordningen eller om de är på fel plats i ordningen, i så fall återställs räkningen.
+        current = 0;
+        return;
+    }
 
-	current++; //För varje knapptryck som stämmer med pattern ökas current med ett.
+    current++; //För varje knapptryck som stämmer med pattern ökas current med ett.
 
-	if (pattern.length === current) { //Om längden på pattern är lika med current, alltså att man har skrivit in konami koden, så återställs current och man blir belönad genom att direkt vinna spelet.
-		current = 0;
-		restart();
+    if (pattern.length === current) { //Om längden på pattern är lika med current, alltså att man har skrivit in konami koden, så återställs current och man blir belönad genom att direkt vinna spelet.
+        current = 0;
+        restart();
         cellElem.forEach(cell => {
             cell.innerHTML = xClass;
             options = xClass;
         })
         winControl();
-	}
-};
+    }
+}
