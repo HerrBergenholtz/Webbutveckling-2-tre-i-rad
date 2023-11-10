@@ -183,8 +183,25 @@ function availableSpots(options) {
     return spots;
 }
 
-function minimax(options, turn) {
-    
+function minimax(newOptions, turn) {
+    let placeableSpots = availableSpots(newOptions);
+
+    if (checkWin(xClass, newOptions)) {
+        return { score: -10 };
+    } else if (checkWin(oClass, newOptions)) {
+        return { score: 20 };
+    } else if (placeableSpots.length === 0) {
+        return { score: 0 };
+    }
+
+    let moves = [];
+
+    for (let i; i < placeableSpots.length; i++) {
+        let move = {};
+        move.index = newOptions[placeableSpots[i]];
+        newOptions[placeableSpots[i]] = xClass;
+
+    }
 }
 
 function randomNum(num) {
