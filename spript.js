@@ -127,17 +127,10 @@ function swapTurns() {
             turn = xClass;
         }
         statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
-    } else if (mode == "computer") { //Om det är datorläge så sker exakt samma sak fast när det blir turn blir oclass så körs computerPlace().
+    } else if (mode == "computer" || mode == "impossible") { //Om det är datorläge så sker exakt samma sak fast när det blir turn blir oclass så körs computerPlace().
         if (turn == xClass) {
             turn = oClass;
             computerPlace();
-        } else {
-            turn = xClass;
-        }
-    } else {
-        if (turn == xClass) {
-            turn = oClass;
-            impossibleComputerPlace();
         } else {
             turn = xClass;
         }
@@ -156,6 +149,7 @@ function displayMessage(winner) { //Visar vinst meddelande.
 function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
     let randomAvailable;
+    let optimalPlay;
 
     available = availableSpots(options);
 
@@ -164,7 +158,10 @@ function computerPlace() { //Här placerar datorn ut sitt O.
         options[randomAvailable] = oClass;
         cellElem[randomAvailable].innerHTML = oClass;
     } else {
-        minimax(options, oClass).index;
+        optimalPlay = minimax(options, oClass);
+        console.log(optimalPlay);
+        options[optimalPlay] = oClass;
+        cellElem[optimalPlay].innerHTML = oClass;
     }
 
     winControl();
@@ -185,11 +182,12 @@ function availableSpots(options) {
 
 function minimax(newOptions, turn) {
     let placeableSpots = availableSpots(newOptions);
+    console.log(placeableSpots);
 
     if (checkWin(xClass, newOptions)) {
         return { score: -10 };
     } else if (checkWin(oClass, newOptions)) {
-        return { score: 20 };
+        return { score: 10 };
     } else if (placeableSpots.length === 0) {
         return { score: 0 };
     }
@@ -201,7 +199,38 @@ function minimax(newOptions, turn) {
         move.index = newOptions[placeableSpots[i]];
         newOptions[placeableSpots[i]] = xClass;
 
+        if (turn == oClass) {
+            let result = minimax(newOptions, xClass);
+            move.score = result.score;
+        } else {
+            let result = minimax(newOptions, oClass);
+            move.score = result.score;
+        }
+
+        newOptions[placeableSpots[i]] = moves.index
+        moves.push(moves);
     }
+    let bestMove;
+    if (turn == oClass) {
+        bestScore = -Infinity;
+        for (let i; i < moves.length; i++) {
+            if (moves[i] > bestScore) {
+                bestScore = bestMove[i].score;
+                bestMove = i;
+            } else {
+                continue;
+            }
+        }
+    } else if (turn == xClass) {
+        bestScore = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i] < bestScore) {
+                bestScore = bestMove[i].score;
+                bestMove = i;
+            }
+        }
+    }
+    return bestMove;
 }
 
 function randomNum(num) {
