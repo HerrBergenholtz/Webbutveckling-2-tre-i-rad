@@ -198,17 +198,21 @@ function minimax(newOptions, turn) {
         let move = {};
         move.index = newOptions[placeableSpots[i]];
         newOptions[placeableSpots[i]] = xClass;
+        console.log("For loop:" + move, newOptions);
 
         if (turn == oClass) {
             let result = minimax(newOptions, xClass);
             move.score = result.score;
+            console.log("For loop if turn = oclass:" + result);
         } else {
             let result = minimax(newOptions, oClass);
             move.score = result.score;
+            console.log("For loop else:" + result);
         }
 
-        newOptions[placeableSpots[i]] = moves.index
+        newOptions[placeableSpots[i]] = moves.index;
         moves.push(moves);
+        console.log(moves);
     }
     let bestMove;
     if (turn == oClass) {
