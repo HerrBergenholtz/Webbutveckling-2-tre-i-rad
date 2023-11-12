@@ -169,6 +169,7 @@ function computerPlace() { //Här placerar datorn ut sitt O.
 
 function availableSpots(options) {
     let spots = [];
+    console.log("spots");
 
     for (let i = 0; i < 9; i++) {
         if (options[i] == "") {
@@ -179,12 +180,12 @@ function availableSpots(options) {
     }
     return spots;
 }
-
-function minimax(newOptions, turn) {
+/*
+function minimax(newOptions, player) {
     let placeableSpots = availableSpots(newOptions);
     console.log(placeableSpots);
 
-    if (checkWin(xClass, newOptions)) {
+    if (checkWin(player, newOptions)) {
         return { score: -10 };
     } else if (checkWin(oClass, newOptions)) {
         return { score: 10 };
@@ -194,17 +195,17 @@ function minimax(newOptions, turn) {
 
     let moves = [];
 
-    for (let i; i < placeableSpots.length; i++) {
-        let move = {};
+    for (let i = 0; i < placeableSpots.length; i++) {
+        let move = [];
         move.index = newOptions[placeableSpots[i]];
-        newOptions[placeableSpots[i]] = xClass;
+        newOptions[placeableSpots[i]] = player;
         console.log("For loop:" + move, newOptions);
 
-        if (turn == oClass) {
+        if (player == oClass) {
             let result = minimax(newOptions, xClass);
-            move.score = result.score;
+            move.player = result.score;
             console.log("For loop if turn = oclass:" + result);
-        } else {
+        } else if (player == xClass) {
             let result = minimax(newOptions, oClass);
             move.score = result.score;
             console.log("For loop else:" + result);
@@ -215,14 +216,13 @@ function minimax(newOptions, turn) {
         console.log(moves);
     }
     let bestMove;
-    if (turn == oClass) {
+
+    if (player == oClass) {
         bestScore = -Infinity;
-        for (let i; i < moves.length; i++) {
+        for (let i = 0; i < moves.length; i++) {
             if (moves[i] > bestScore) {
                 bestScore = bestMove[i].score;
                 bestMove = i;
-            } else {
-                continue;
             }
         }
     } else if (turn == xClass) {
@@ -234,7 +234,48 @@ function minimax(newOptions, turn) {
             }
         }
     }
-    return bestMove;
+    return moves[bestMove];
+}
+*/
+
+function minimax(newOptions, player) {
+    console.log("minimax");
+    let placeableSpots = availableSpots(newOptions);
+    let value;
+    console.log(placeableSpots);
+
+    if (checkWin(player, newOptions)) {
+        return value = 1;
+    } else if (checkWin(xClass, newOptions)) {
+        return value = -1;
+    } else if (placeableSpots.length === 0) {
+        return value = 0;
+    }
+    
+    let move;
+    for (let i = 0; i < placeableSpots.length; i++) {
+        move = newOptions[placeableSpots[i]];
+        newOptions[move[i]] = player;
+        console.log("For loop:" + move, newOptions);
+    
+        if (player == oClass) {
+            value = -Infinity;
+            for (i = 0; i < placeableSpots.length; i++) {
+                console.log("for, if: oclass, for");
+                value = minimax(xClass, newOptions);
+                console.log(value);
+                return value;
+            }
+        } else {
+            value = Infinity;
+            console.log("for, else, for");
+            for (i = 0; i < placeableSpots.length; i++) {
+                value = minimax(oClass, newOptions);
+                console.log(value);
+                return value;
+            }
+        }
+    }
 }
 
 function randomNum(num) {
