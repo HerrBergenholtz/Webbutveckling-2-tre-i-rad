@@ -105,6 +105,7 @@ function winControl() { //Kontrollerar vinst.
 }
 
 function checkWin(turn, options) {
+    console.log(turn, options);
     for (let i = 0; i < conditions.length; i++) { //En for-loop som kommer loopa igeonom alla vilkor och kolla om alla korresponderande platser i options är fyllda med samma symbol.
         const winCondition = conditions[i]; //WinCondition deklareras som conditions i positionen av i, alltså så kommer varje loop kolla genom en condition.
         const cell1 = options[winCondition[0]];
@@ -114,7 +115,7 @@ function checkWin(turn, options) {
         if (cell1 === "" || cell2 === "" || cell3 === "") { //Ifall någon av cellerna är tomma så kan ingen ha vunnit och då går programmet vidare.
             continue;
         } else if (cell1 == turn && cell2 == turn && cell3 == turn) { //Om alla tre celler i en condition är samma symbol i options, alltså de är samma tecken så skickas win = true tillbaka till winControl.
-            return win = true;
+            return true;
         }
     }
 }
@@ -158,7 +159,8 @@ function computerPlace() { //Här placerar datorn ut sitt O.
         options[randomAvailable] = oClass;
         cellElem[randomAvailable].innerHTML = oClass;
     } else {
-        optimalPlay = minimax(options, oClass);
+        let newOptions = options;
+        optimalPlay = minimax(newOptions, oClass);
         console.log(optimalPlay);
         options[optimalPlay] = oClass;
         cellElem[optimalPlay].innerHTML = oClass;
@@ -171,7 +173,7 @@ function availableSpots(options) {
     let spots = [];
     console.log("spots");
 
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < options.length; i++) {
         if (options[i] == "") {
             spots.push(i);
         } else {
@@ -180,35 +182,44 @@ function availableSpots(options) {
     }
     return spots;
 }
-/*
+
 function minimax(newOptions, player) {
+    console.log("minimax");
+    console.log(newOptions);
     let placeableSpots = availableSpots(newOptions);
     console.log(placeableSpots);
 
-    if (checkWin(player, newOptions)) {
+    /*if (checkWin(xClass, newOptions)) {
         return { score: -10 };
     } else if (checkWin(oClass, newOptions)) {
         return { score: 10 };
     } else if (placeableSpots.length === 0) {
         return { score: 0 };
+    }*/
+
+    if (checkWin(oClass, newOptions)) {
+        return value = +20;
+    } else if (checkWin(xClass, newOptions)) {
+        return value = -10;
+    } else if (placeableSpots.length === 0) {
+        return value = 0;
     }
+
 
     let moves = [];
 
     for (let i = 0; i < placeableSpots.length; i++) {
-        let move = [];
+        let move = {};
         move.index = newOptions[placeableSpots[i]];
         newOptions[placeableSpots[i]] = player;
-        console.log("For loop:" + move, newOptions);
+        console.log(newOptions);
 
         if (player == oClass) {
             let result = minimax(newOptions, xClass);
-            move.player = result.score;
-            console.log("For loop if turn = oclass:" + result);
-        } else if (player == xClass) {
+            move.score = result.score
+        } else {
             let result = minimax(newOptions, oClass);
-            move.score = result.score;
-            console.log("For loop else:" + result);
+            move.score = result.score
         }
 
         newOptions[placeableSpots[i]] = moves.index;
@@ -236,31 +247,32 @@ function minimax(newOptions, player) {
     }
     return moves[bestMove];
 }
-*/
 
+/*
 function minimax(newOptions, player) {
     console.log("minimax");
     let placeableSpots = availableSpots(newOptions);
     let value;
     console.log(placeableSpots);
+    console.log(newOptions);
 
     if (checkWin(player, newOptions)) {
-        return value = 1;
+        return value = +1;
     } else if (checkWin(xClass, newOptions)) {
         return value = -1;
     } else if (placeableSpots.length === 0) {
         return value = 0;
     }
-    
+
     let move;
     for (let i = 0; i < placeableSpots.length; i++) {
         move = newOptions[placeableSpots[i]];
         newOptions[move[i]] = player;
         console.log("For loop:" + move, newOptions);
-    
+
         if (player == oClass) {
             value = -Infinity;
-            for (i = 0; i < placeableSpots.length; i++) {
+            for (j = 0; j < placeableSpots.length; j++) {
                 console.log("for, if: oclass, for");
                 value = minimax(xClass, newOptions);
                 console.log(value);
@@ -269,7 +281,7 @@ function minimax(newOptions, player) {
         } else {
             value = Infinity;
             console.log("for, else, for");
-            for (i = 0; i < placeableSpots.length; i++) {
+            for (j = 0; j < placeableSpots.length; j++) {
                 value = minimax(oClass, newOptions);
                 console.log(value);
                 return value;
@@ -277,7 +289,7 @@ function minimax(newOptions, player) {
         }
     }
 }
-
+*/
 function randomNum(num) {
     return Math.floor(Math.random() * num.length);
 }
