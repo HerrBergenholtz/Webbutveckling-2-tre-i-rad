@@ -162,6 +162,7 @@ function computerPlace() { //Här placerar datorn ut sitt O.
         optimalPlay = minimax(options, oClass);
         console.log(optimalPlay);
         options[optimalPlay] = oClass;
+        console.log(options);
         cellElem[optimalPlay].innerHTML = oClass;
     }
 
@@ -243,11 +244,14 @@ function minimax(newOptions, player) {
     console.log(placeableSpots);
 
     if (checkWin(xClass, newOptions)) {
-        return { value: -10 };
+        console.log("checkwin xclass")
+        return { score: -10 };
     } else if (checkWin(oClass, newOptions)) {
-        return { value: 10 };
+        console.log("checkwin oclass")
+        return { score: 10 };
     } else if (!newOptions.includes("")) {
-        return { value: 0 };
+        console.log("draw")
+        return { score: 0 };
     }
 
     let moves = [];
@@ -260,10 +264,10 @@ function minimax(newOptions, player) {
 
         if (player == oClass) {
             let result = minimax(newOptions, xClass);
-            move.value = result.value;
+            move.score = result.score;
         } else if (player == xClass) {
             let result = minimax(newOptions, oClass);
-            move.value = result.value;
+            move.score = result.score;
         }
 
         newOptions[placeableSpots[i]] = move.index;
@@ -272,24 +276,24 @@ function minimax(newOptions, player) {
     }
     let bestMove;
 
-    if (player == oClass) {
+    if (player === oClass) {
         let bestScore = -Infinity;
         for (let i = 0; i < placeableSpots.length; i++) {
-            if (moves[i].value > bestScore) {
-                bestScore = moves[i].value;
+            if (moves[i].score > bestScore) {
+                bestScore = moves[i].score;
                 bestMove = i;
             }
         }
-    } else if (player == xClass) {
+    } else if (player === xClass) {
         let bestScore = Infinity;
         for (let i = 0; i < placeableSpots.length; i++) {
-            if (moves[i].value < bestScore) {
-                bestScore = moves[i].value;
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
                 bestMove = i;
             }
         }
     }
-    return moves[bestMove];
+    return bestMove;
 }
 
 /*function minimax(newOptions, player) {
