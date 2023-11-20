@@ -90,7 +90,7 @@ function winControl() { //Kontrollerar vinst.
         displayMessage();
         statusText.innerHTML = "<p>Lika!</p>";
         running = false;
-    }else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
+    } else { //Om ingen har vunnit och det inte är lika så fortsätter spelet och det blir den andra symbolens tur 
         swapTurns();
     }
 }
@@ -139,7 +139,7 @@ function displayMessage(winner) { //Visar vinst meddelande.
 
 function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
-    let randomAvailable; 
+    let randomAvailable;
 
     for (let i = 0; i < 9; i++) {
         if (options[i] == "") {
@@ -164,7 +164,7 @@ function restart() { //Startar om spelet.
     if (mode == "normal") {
         statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
     } else {
-    statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
+        statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
     }
     cellElem.forEach(cell => cell.innerHTML = ""); //Tömmer alla cell element på tecken
     winningMsg.classList.remove("display"); //Tar bort display klassen från overlayen så att den återigen får en display av none.
@@ -176,20 +176,20 @@ let pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Arr
 let current = 0; //Current är hur långt användaren har kommit i ordningen, alltså vilken plats i pattern arrayen de är på beroende på vilka knappar de tryckt på vilket börjar på 0.
 
 konami = (event) => { //Den function som kontrollerar hur långt användaren har kommit
-	if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) { //If-satsen kontrollerar att de tangenter som trycks är i ordningen eller om de är på fel plats i ordningen, i så fall återställs räkningen.
-		current = 0;
-		return;
-	}
+    if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) { //If-satsen kontrollerar att de tangenter som trycks är i ordningen eller om de är på fel plats i ordningen, i så fall återställs räkningen.
+        current = 0;
+        return;
+    }
 
-	current++; //För varje knapptryck som stämmer med pattern ökas current med ett.
+    current++; //För varje knapptryck som stämmer med pattern ökas current med ett.
 
-	if (pattern.length === current) { //Om längden på pattern är lika med current, alltså att man har skrivit in konami koden, så återställs current och man blir belönad genom att direkt vinna spelet.
-		current = 0;
-		restart();
+    if (pattern.length === current) { //Om längden på pattern är lika med current, alltså att man har skrivit in konami koden, så återställs current och man blir belönad genom att direkt vinna spelet.
+        current = 0;
+        restart();
         cellElem.forEach(cell => {
             cell.innerHTML = xClass;
             options = xClass;
         })
         winControl();
-	}
+    }
 };
