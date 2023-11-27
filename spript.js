@@ -60,7 +60,6 @@ function vsComputer() { //När man väljer vscomputer mode så startas spelet om
     statusText.innerHTML = "<p>Du kör mot datorn, lycka till!</p>";
 }
 
-
 function clickHandle() { //Hanterar klick av användaren.
     const cellIndex = this.getAttribute("data-cellIndex"); //Deklarerar cellIndex som värdet på attributet data-cellIndex hos det element som klickades, alltså så kommer det bli ett nummer mellan 0-9.
 
@@ -118,7 +117,7 @@ function swapTurns() {
             turn = xClass;
         }
         statusText.innerHTML = "<p>Det är " + turn + " tur</p>";
-    } else if (mode == "computer") { //Om det är datorläge så sker exakt samma sak fast när det blir turn blir oclass så körs computerPlace().
+    } else { //Om det är datorläge så sker exakt samma sak fast när det blir turn blir oclass så körs computerPlace().
         if (turn == xClass) {
             turn = oClass;
             computerPlace();
@@ -141,17 +140,25 @@ function computerPlace() { //Här placerar datorn ut sitt O.
     let available = [];
     let randomAvailable;
 
-    for (let i = 0; i < 9; i++) {
-        if (options[i] == "") {
-            available.push(i);
-        } else {
-            continue;
-        }
-    }
+    available = availableSpots(options);
+
     randomAvailable = available[randomNum(available)];
     options[randomAvailable] = oClass;
     cellElem[randomAvailable].innerHTML = oClass;
     winControl();
+}
+
+function availableSpots(options) {
+    let spots = [];
+
+    for (let i = 0; i < options.length; i++) {
+        if (options[i] === "") {
+            spots.push(i);
+        } else {
+            continue;
+        }
+    }
+    return spots;
 }
 
 function randomNum(num) {
